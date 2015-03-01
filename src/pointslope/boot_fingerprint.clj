@@ -20,9 +20,7 @@
             f-pod (fingerprint-pod)]
         (doseq [boot-tmp-file boot-tmp-files]
           (pod/with-call-in f-pod
-            ;(pointslope.boot-fingerprint.fingerprint/test-fingerprint ~msg)
             (pointslope.boot-fingerprint.fingerprint/fingerprint-file ~output-dir-path ~(.getPath (tmpfile boot-tmp-file)))
-            ;(pointslope.boot-fingerprint.fingerprint/fingerprint-file ~output-dir-path ~output-dir-path)
             )))
       (-> fileset
           (add-resource output-dir)
