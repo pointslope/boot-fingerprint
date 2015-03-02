@@ -29,7 +29,3 @@
   []
   (comp (garden :output-to "css/main.css" :styles-var 'mygarden.styles/base)
         (fingerprint)))
-
-(deftask one
-  []
-  (garden :output-to "css/main.css" :styles-var 'mygarden.styles/base))
