@@ -9,8 +9,8 @@
    input dir, 'input-dir'."
   [asset css-js-files]
   (let [path (subs (str asset) 1)
-        input-file-path (asset css-js-files)
-        sha1 (sha1-file input-file-path)
+        file-path (asset css-js-files)
+        sha1 (sha1-file file-path)
         fingerprint (str path "?v=" sha1)]
     (info (format "Adding fingerprint '%s'.\n" fingerprint))
     fingerprint))
@@ -20,9 +20,7 @@
   parameter and creates the output file in the output directory, 'output-dir' with the specified
   relative path, 'rel-path'. Nested output directories are created if necessary."
   [output-dir path rel-path css-js-files]
-  (let [root-input-dir (first (clojure.string/split path
-                                                    (re-pattern rel-path)))
-        input-file (io/file path)
+  (let [input-file (io/file path)
         output-file (io/file output-dir rel-path)
         template-fn (template
                      (html-resource input-file)
