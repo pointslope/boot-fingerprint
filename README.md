@@ -12,6 +12,8 @@ For example:
 Assets dynamically created through other boot tasks can be included in
 asset fingerprinting through task composition.
 
+[![Clojars Project](http://clojars.org/boot-fingerprint/latest-version.svg)](http://clojars.org/boot-fingerprint)
+
 ## Usage
 
 ### Terminal
