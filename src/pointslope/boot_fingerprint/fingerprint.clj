@@ -4,18 +4,19 @@
             [clojure.java.io :as io]
             [pandect.algo.sha1 :refer [sha1-file]]))
 
-(defn fingerprint-asset [asset]
+(defn fingerprint-asset [asset input-dir]
   (let [path (subs (str asset) 1)
-        file (str "target/" path)
-        sha1 (sha1-file file)]
+        sha1 (sha1-file (str input-dir "/" path))]
     (info (format "Fingerprinting file '%s'.\n" path))
     (str path "?v=" sha1)))
 
-(defn fingerprint-file [output-dir file-path]
-  (let [file (io/file file-path)
+(defn fingerprint-file [output-dir file-path rel-path]
+  (let [root-input-dir (first (clojure.string/split file-path (re-pattern rel-path)))
+        input-file (io/file file-path)
+        output-file (io/file output-dir rel-path)
         template-fn (template
-                     (html-resource file)
+                     (html-resource input-file)
                      []
-                     [any-node] (replace-vars fingerprint-asset))]
-    (spit (io/file output-dir (.getName file))
-          (reduce str (template-fn)))))
+                     [any-node] (replace-vars #(fingerprint-asset % root-input-dir)))]
+    (.mkdirs (.getParentFile output-file))
+    (spit output-file (reduce str (template-fn)))))
