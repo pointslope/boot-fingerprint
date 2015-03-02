@@ -41,6 +41,11 @@ Refer to the examples directory for static and dynamic examples.
 
 There are no options.
 
+## Attribution
+
+This project was inspired by [boot pages](https://github.com/DanThiffault/boot-pages) and the fingerprinting
+implementation is an adaptation of the implementation found there.
+
 ## License
 
 Copyright Point Slope, LLC 2015.
