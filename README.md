@@ -30,6 +30,8 @@ boot watch fingerprint
 ### build.boot file
 
 ```clojure
+(require '[pointslope.boot-fingerprint :refer [fingerprint]])
+
 (deftask run
   []
   (comp (watch) (fingerprint)))
