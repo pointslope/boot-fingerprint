@@ -3,20 +3,8 @@
   (:require [boot.core :as boot :refer [deftask temp-dir! with-pre-wrap output-files tmpfile tmppath empty-dir! by-ext add-resource commit! get-env]]
             [boot.pod  :as pod :refer [make-pod]]
             [boot.file :as file]
-            [boot.util :as util :refer [info]]))
-
-(defn fingerprint-pod
-  "Creates a pod with the requisite fingerprint dependencies."
-  []
-  (make-pod (update-in (get-env) [:dependencies] into '[[enlive "1.1.5"]
-                                                        [pandect "0.5.1"]])))
-
-(defn- create-css-js-map
-  "Creates a map of css/js file paths. The map has the following structure:
-   {:rel-path abosulute-path}"
-  [fileset]
-  (into {} (map #(hash-map (keyword (tmppath %)) (.getPath (tmpfile %)))
-                (by-ext [".css" ".js"] (output-files fileset)))))
+            [boot.util :as util :refer [info]]
+            [pointslope.boot-fingerprint.fingerprint :as boot-fingerprint]))
 
 (deftask fingerprint
   "Add cache buster fingerprints to all html files. Resources to be
@@ -25,22 +13,15 @@
    <link rel=\"stylesheet\" src=\"${css/main.css}\" />
 "
   []
-  (let [output-dir (temp-dir!)
-        output-dir-path (.getPath output-dir)]
+  (let [output-dir (temp-dir!)]
     (empty-dir! output-dir)
     (with-pre-wrap fileset
-      (info "Fingerprinting files.\n")
-      (let [html-files (by-ext [".html"] (output-files fileset))
-            css-js-files (create-css-js-map fileset)
-            f-pod (fingerprint-pod)]
+      (let [html-files (by-ext [".html"] (output-files fileset))]
+        (info "Fingerprinting files.\n")
         (doseq [html-file html-files]
-          (let [absolute-file-path (.getPath (tmpfile html-file))
-                rel-file-path (tmppath html-file)]
-            (pod/with-call-in f-pod
-              (pointslope.boot-fingerprint.fingerprint/fingerprint-file ~output-dir-path
-                                                                        ~absolute-file-path
-                                                                        ~rel-file-path
-                                                                        ~css-js-files)))))
+          (boot-fingerprint/fingerprint-file output-dir
+                                             html-file
+                                             (output-files fileset))))
       (-> fileset
           (add-resource output-dir)
           (commit!)))))

@@ -2,12 +2,12 @@
  :source-paths   #{"src/clj" "src/cljs"}
  :resource-paths #{"html"}
  :dependencies '[[org.clojure/clojurescript "0.0-2814"]
-                 [org.clojure/clojure   "1.6.0"      :scope "provided"]
-                 [adzerk/boot-cljs      "0.0-2814-1" :scope "test"]
-                 [adzerk/boot-reload    "0.2.4"      :scope "test"]
-                 [pandeiro/boot-http    "0.3.0"      :scope "test"]
-                 [boot-garden           "1.2.5-2"    :scope "test"]
-                 [boot-fingerprint      "0.1.0"      :scope "test"]])
+                 [org.clojure/clojure   "1.6.0"               :scope "provided"]
+                 [adzerk/boot-cljs      "0.0-2814-1"          :scope "test"]
+                 [adzerk/boot-reload    "0.2.4"               :scope "test"]
+                 [pandeiro/boot-http    "0.3.0"               :scope "test"]
+                 [boot-garden           "1.2.5-2"             :scope "test"]
+                 [boot-fingerprint      "0.1.1-SNAPSHOT"      :scope "test"]])
 
 (require
  '[adzerk.boot-cljs            :refer [cljs]]
