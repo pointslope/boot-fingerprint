@@ -27,12 +27,6 @@ To re-fingerprint on changes, use boot's watch task:
 boot watch fingerprint
 ```
 
-Fingerprinting can be skipped with the `-s` or `--skip` option.
-
-```
-boot fingerprint -s
-```
-
 ### build.boot file
 
 ```clojure
@@ -43,21 +37,13 @@ boot fingerprint -s
   (comp (watch) (fingerprint)))
 ```
 
-Fingerprinting can be skipped with the `:skip` option.
-
-```clojure
-(require '[pointslope.boot-fingerprint :refer [fingerprint]])
-
-(deftask run
-  []
-  (comp (watch) (fingerprint :skip true)))
-```
-
 ## Examples
 
 Refer to the examples directory for static and dynamic examples.
 
 ## Options
+
+*NOTE* The `skip` option is available as of the 0.1.1-SNAPSHOT.
 
 ```
 Options:
