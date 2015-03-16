@@ -18,8 +18,7 @@
     (first matches)))
 
 (defn fingerprint-asset
-  "Returns a fingerprint based on the sha1 of the asset file, 'asset', located in the 
-   input dir, 'input-dir'."
+  "Returns a fingerprint based on the sha1 of the asset file, 'asset'."
   [asset-file]
   (let [sha1 (sha1-file (tmpfile asset-file))
         fingerprint (str (tmppath asset-file) "?v=" sha1)]
@@ -31,9 +30,9 @@
   (fingerprint-asset (find-asset-file asset files)))
 
 (defn fingerprint-file
-  "Adds a fingerprint query parameter to all asset vars in the file specified by the 'path'
-  parameter and creates the output file in the output directory, 'output-dir' with the specified
-  relative path, 'rel-path'. Nested output directories are created if necessary."
+  "Adds a fingerprint query parameter to all asset vars in the file 
+  and creates the output file in the output directory, 'output-dir'.
+  Nested output directories are created if necessary."
   [output-dir file files skip]
   (let [input-file (tmpfile file)
         output-file (io/file output-dir (tmppath file))

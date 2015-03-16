@@ -11,8 +11,15 @@
    fingerprinted should be wrapped in enlive's replace-var syntax.
 
    <link rel=\"stylesheet\" src=\"${css/main.css}\" />
+
+   Fingerprinting can be skipped with the -s true (command line) or
+   :skip true (code) option. When skipping, vars are replaced with
+   their values. The above example would become:
+
+   <link rel=\"stylesheet\" src=\"css/main.css\" />
 "
-  [s skip bool "Skips file fingerprinting and replaces all vars with their value."]
+  [s skip     bool "Skips file fingerprinting and
+                    replaces all vars with their value."]
   (let [output-dir (temp-dir!)]
     (empty-dir! output-dir)
     (with-pre-wrap fileset
