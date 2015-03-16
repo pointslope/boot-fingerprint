@@ -5,10 +5,14 @@
             [clojure.java.io :as io]
             [pandect.algo.sha1 :refer [sha1-file]]))
 
+(defn- asset->relpath
+  [asset]
+  (subs (str asset) 1))
+
 (defn find-asset-file
   "Looks up the asset by relative path in the files seq."
   [asset files]
-  (let [path (subs (str asset) 1)
+  (let [path (asset->relpath asset)
         pattern (re-pattern path)
         matches (by-re [pattern] files)]
     (first matches)))
@@ -30,13 +34,15 @@
   "Adds a fingerprint query parameter to all asset vars in the file specified by the 'path'
   parameter and creates the output file in the output directory, 'output-dir' with the specified
   relative path, 'rel-path'. Nested output directories are created if necessary."
-  [output-dir file files]
+  [output-dir file files skip]
   (let [input-file (tmpfile file)
         output-file (io/file output-dir (tmppath file))
         template-fn (template
                      (html-resource input-file)
                      []
-                     [any-node] (replace-vars #(find-and-fingerprint-asset % files)))]
+                     [any-node] (replace-vars #(if skip
+                                                 (asset->relpath %)
+                                                 (find-and-fingerprint-asset % files))))]
     (info (format "Fingerprinting file %s.\n" (tmppath file)))
     (.mkdirs (.getParentFile output-file))
     (spit output-file (reduce str (template-fn)))))

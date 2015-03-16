@@ -16,7 +16,7 @@
  '[boot-garden.core            :refer [garden]]
  '[pointslope.boot-fingerprint :refer [fingerprint]])
 
-(deftask start
+(deftask run
   []
   (comp (serve :dir "target")
         (watch)

@@ -12,7 +12,7 @@
 
    <link rel=\"stylesheet\" src=\"${css/main.css}\" />
 "
-  []
+  [s skip bool "Skips file fingerprinting and replaces all vars with their value."]
   (let [output-dir (temp-dir!)]
     (empty-dir! output-dir)
     (with-pre-wrap fileset
@@ -21,7 +21,8 @@
         (doseq [html-file html-files]
           (boot-fingerprint/fingerprint-file output-dir
                                              html-file
-                                             (output-files fileset))))
+                                             (output-files fileset)
+                                             skip)))
       (-> fileset
-          (add-resource output-dir)
-          (commit!)))))
+         (add-resource output-dir)
+         (commit!)))))
