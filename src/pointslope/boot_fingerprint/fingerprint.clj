@@ -13,7 +13,7 @@
   "Looks up the asset by relative path in the files seq."
   [asset files]
   (let [path (asset->relpath asset)
-        pattern (re-pattern path)
+        pattern (re-pattern (str "^" path))
         matches (by-re [pattern] files)]
     (first matches)))
 
