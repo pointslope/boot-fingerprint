@@ -7,7 +7,7 @@ based on the sha1 of the asset file.
 
 For example:
 
-    <link rel="stylesheet" src="${css/main.css"} />
+    <link rel="stylesheet" src="${css/main.css}" />
 
 Assets dynamically created through other boot tasks can be included in
 asset fingerprinting through task composition.
