@@ -3,11 +3,20 @@
             [boot.core :as boot :refer [tmpfile tmppath by-re]]
             [net.cgrand.enlive-html :as html :refer [template html-resource any-node replace-vars]]
             [clojure.java.io :as io]
+            [clojure.string :as string]
             [pandect.algo.sha1 :refer [sha1-file]]))
 
+(def prefix-regex #"^[\./]+")
+
 (defn- asset->relpath
+  "Returns the asset name with as a relative path, with prefixes stripped."
   [asset]
-  (subs (str asset) 1))
+  (string/replace asset prefix-regex ""))
+
+(defn- asset->asset-prefix
+  "Returns the absolute path pefix for an an asset name."
+  [asset]
+  (re-find prefix-regex asset))
 
 (defn find-asset-file
   "Looks up the asset by relative path in the files seq."
@@ -19,15 +28,17 @@
 
 (defn fingerprint-asset
   "Returns a fingerprint based on the sha1 of the asset file, 'asset'."
-  [asset-file]
+  [asset-file asset-prefix]
   (let [sha1 (sha1-file (tmpfile asset-file))
-        fingerprint (str (tmppath asset-file) "?v=" sha1)]
+        fingerprint (str asset-prefix (tmppath asset-file) "?v=" sha1)]
     (info (format "Adding fingerprint '%s'.\n" fingerprint))
     fingerprint))
 
 (defn find-and-fingerprint-asset
   [asset files]
-  (fingerprint-asset (find-asset-file asset files)))
+  (let [asset-prefix (asset->asset-prefix asset)
+        asset-file (find-asset-file asset files)]
+    (fingerprint-asset asset-file asset-prefix)))
 
 (defn fingerprint-file
   "Adds a fingerprint query parameter to all asset vars in the file 
@@ -39,9 +50,12 @@
         template-fn (template
                      (html-resource input-file)
                      []
-                     [any-node] (replace-vars #(if skip
-                                                 (asset->relpath %)
-                                                 (find-and-fingerprint-asset % files))))]
+                     [any-node] (replace-vars
+                                 (fn [asset-name]
+                                   (let [asset-file (subs (str asset-name) 1)]
+                                     (if skip
+                                       (asset->relpath asset-file)
+                                       (find-and-fingerprint-asset asset-file files))))))]
     (info (format "Fingerprinting file %s.\n" (tmppath file)))
     (.mkdirs (.getParentFile output-file))
     (spit output-file (reduce str (template-fn)))))
