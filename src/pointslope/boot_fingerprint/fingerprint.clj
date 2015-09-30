@@ -41,7 +41,7 @@
     (fingerprint-asset asset-file asset-prefix)))
 
 (defn fingerprint-file
-  "Adds a fingerprint query parameter to all asset vars in the file 
+  "Adds a fingerprint query parameter to all asset vars in the file
   and creates the output file in the output directory, 'output-dir'.
   Nested output directories are created if necessary."
   [output-dir file files skip]
