@@ -1,6 +1,6 @@
 (ns pointslope.boot-fingerprint
   {:boot/export-tasks true}
-  (:require [boot.core :as boot :refer [deftask tmp-dir! with-pre-wrap output-files tmpfile tmppath empty-dir! by-ext add-resource commit! get-env]]
+  (:require [boot.core :as boot :refer [deftask tmp-dir! with-pre-wrap output-files empty-dir! by-ext add-resource commit!]]
             [boot.pod  :as pod :refer [make-pod]]
             [boot.file :as file]
             [boot.util :as util :refer [info]]
