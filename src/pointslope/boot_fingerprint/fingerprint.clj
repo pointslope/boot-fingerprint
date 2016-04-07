@@ -66,7 +66,12 @@
                                    (let [asset-file (subs (str asset-name) 1)]
                                      (if skip
                                        (asset->relpath asset-file)
-                                       (find-and-fingerprint-asset asset-file files))))))]
+                                       (let [fingerprinted-name (find-and-fingerprint-asset asset-file files)
+                                             input (tmpfile (find-asset-file asset-file files))
+                                             output (io/file output-dir fingerprinted-name)]
+                                         (.mkdirs (.getParentFile output))
+                                         (spit output (slurp input))
+                                         fingerprinted-name))))))]
     (info (format "Fingerprinting file %s.\n" (tmppath file)))
     (.mkdirs (.getParentFile output-file))
     (spit output-file (reduce str (template-fn)))))
