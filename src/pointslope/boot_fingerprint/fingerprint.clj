@@ -70,7 +70,7 @@
                                              input (tmpfile (find-asset-file asset-file files))
                                              output (io/file output-dir fingerprinted-name)]
                                          (.mkdirs (.getParentFile output))
-                                         (spit output (slurp input))
+                                         (io/copy input output)
                                          fingerprinted-name))))))]
     (info (format "Fingerprinting file %s.\n" (tmppath file)))
     (.mkdirs (.getParentFile output-file))
