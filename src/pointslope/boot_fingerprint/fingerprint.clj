@@ -26,11 +26,22 @@
         matches (by-re [pattern] files)]
     (first matches)))
 
+(defn fingerprint-filename [filename sha1]
+  (let [splitted (string/split filename #"\.")]
+    (if (= 1 (count splitted))
+      (str filename "." sha1)
+      (-> (butlast splitted)
+          vec
+          (conj sha1)
+          (conj (last (rest splitted)))
+          (#(string/join "." %))))))
+
 (defn fingerprint-asset
   "Returns a fingerprint based on the sha1 of the asset file, 'asset'."
   [asset-file asset-prefix]
   (let [sha1 (sha1-file (tmpfile asset-file))
-        fingerprint (str asset-prefix (tmppath asset-file) "?v=" sha1)]
+        fingerprint (str asset-prefix
+                         (fingerprint-filename (tmppath asset-file) sha1))]
     (info (format "Adding fingerprint '%s'.\n" fingerprint))
     fingerprint))
 
@@ -55,7 +66,12 @@
                                    (let [asset-file (subs (str asset-name) 1)]
                                      (if skip
                                        (asset->relpath asset-file)
-                                       (find-and-fingerprint-asset asset-file files))))))]
+                                       (let [fingerprinted-name (find-and-fingerprint-asset asset-file files)
+                                             input (tmpfile (find-asset-file asset-file files))
+                                             output (io/file output-dir fingerprinted-name)]
+                                         (.mkdirs (.getParentFile output))
+                                         (io/copy input output)
+                                         fingerprinted-name))))))]
     (info (format "Fingerprinting file %s.\n" (tmppath file)))
     (.mkdirs (.getParentFile output-file))
     (spit output-file (reduce str (template-fn)))))
