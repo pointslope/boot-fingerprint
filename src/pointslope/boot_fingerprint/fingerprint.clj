@@ -1,6 +1,6 @@
 (ns pointslope.boot-fingerprint.fingerprint
   (:require [boot.util :as util :refer [info]]
-            [boot.core :as boot :refer [tmpfile tmppath by-re]]
+            [boot.core :as boot :refer [tmp-file tmp-path by-re]]
             [net.cgrand.enlive-html :as html :refer [template html-resource any-node replace-vars]]
             [clojure.java.io :as io]
             [clojure.string :as string]
@@ -29,8 +29,8 @@
 (defn fingerprint-asset
   "Returns a fingerprint based on the sha1 of the asset file, 'asset'."
   [asset-file asset-prefix]
-  (let [sha1 (sha1-file (tmpfile asset-file))
-        fingerprint (str asset-prefix (tmppath asset-file) "?v=" sha1)]
+  (let [sha1 (sha1-file (tmp-file asset-file))
+        fingerprint (str asset-prefix (tmp-path asset-file) "?v=" sha1)]
     (info (format "Adding fingerprint '%s'.\n" fingerprint))
     fingerprint))
 
@@ -45,8 +45,8 @@
   and creates the output file in the output directory, 'output-dir'.
   Nested output directories are created if necessary."
   [output-dir file files skip]
-  (let [input-file (tmpfile file)
-        output-file (io/file output-dir (tmppath file))
+  (let [input-file (tmp-file file)
+        output-file (io/file output-dir (tmp-path file))
         template-fn (template
                      (html-resource input-file)
                      []
@@ -56,6 +56,6 @@
                                      (if skip
                                        (asset->relpath asset-file)
                                        (find-and-fingerprint-asset asset-file files))))))]
-    (info (format "Fingerprinting file %s.\n" (tmppath file)))
+    (info (format "Fingerprinting file %s.\n" (tmp-path file)))
     (.mkdirs (.getParentFile output-file))
     (spit output-file (reduce str (template-fn)))))

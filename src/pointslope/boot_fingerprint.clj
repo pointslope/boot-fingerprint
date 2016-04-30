@@ -1,6 +1,6 @@
 (ns pointslope.boot-fingerprint
   {:boot/export-tasks true}
-  (:require [boot.core :as boot :refer [deftask temp-dir! with-pre-wrap output-files tmpfile tmppath empty-dir! by-ext add-resource commit! get-env]]
+  (:require [boot.core :as boot :refer [deftask tmp-dir! with-pre-wrap output-files empty-dir! by-ext add-resource commit!]]
             [boot.pod  :as pod :refer [make-pod]]
             [boot.file :as file]
             [boot.util :as util :refer [info]]
@@ -20,7 +20,7 @@
 "
   [s skip     bool "Skips file fingerprinting and
                     replaces all vars with their value."]
-  (let [output-dir (temp-dir!)]
+  (let [output-dir (tmp-dir!)]
     (empty-dir! output-dir)
     (with-pre-wrap fileset
       (let [html-files (by-ext [".html"] (output-files fileset))]
